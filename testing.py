@@ -2,6 +2,7 @@ from sklearn import datasets
 from sklearn.naive_bayes import GaussianNB
 from sklearn.metrics import accuracy_score
 import numpy as np
+import keras
 
 #loading the iris dataset
 iris = datasets.load_iris()
