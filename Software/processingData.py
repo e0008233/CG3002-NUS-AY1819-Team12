@@ -5,7 +5,9 @@ from scipy.fftpack import fft
 from pathlib import Path
 import os
 
-path = str(Path().resolve().parent)
+WINDOW_SIZE = 128
+
+path = str(Path().resolve().parent) + '\Data'
 print(path)
 
 # Different volunteers
@@ -21,7 +23,7 @@ sensorPositionList = ['waist', 'chest','thigh']
 for subject in subjectList:
     for activity in activityList:
         # ----------------------- Compiling all sensor data into one file -------------------------
-        pathToOpen = path + '\Data' + '\\' + subject + '\\' + activity
+        pathToOpen = path + '\\' + subject + '\\' + activity
         header = ['id']
         count = 0
         combinedData_sensor = []
@@ -73,11 +75,10 @@ for subject in subjectList:
 
         stat_list = []
         # windows of 2.56 sec and 50% overlap (128 readings/window), details in report section 5
-        window_size = 128
+        window_size = WINDOW_SIZE
         overlap = window_size // 2
         segment = []
         labels = []
-        count = 0
         for i in range(int(len(X) / overlap)):
             segment.append(X[i * overlap : ((i * overlap) + window_size), 0:])
 
