@@ -8,14 +8,14 @@ path = os.getcwd()
 print (path)
 
 # Different volunteers
-# subjectList = ['Subject1', 'Subject2', 'Subject3', 'Subject4']
-subjectList = ['Subject1']
+subjectList = ['Subject1', 'Subject2', 'Subject3', 'Subject4']
+# subjectList = ['Subject1']
 # Different activity classification
-# activityList = ['climbingdown','walking','jumping']
-activityList = ['jumping']
+activityList = ['climbingdown','walking','jumping']
+# activityList = ['jumping']
 # sensor position needed
-# sensorPositionList = ['waist', 'chest','thigh']
-sensorPositionList = ['waist']
+sensorPositionList = ['waist', 'chest','thigh']
+# sensorPositionList = ['waist']
 
 os.listdir(path+'/Data')
 
@@ -38,6 +38,7 @@ for subject in subjectList:
 
                     # drop all na values
                     df.dropna(how='any', inplace=True)
+                    data = df.values
 
                     # add id column
                     if (count == 1):
@@ -119,4 +120,6 @@ for subject in subjectList:
             stat_list.append(temp_row)
         #         print (stat_list)
         df = pd.DataFrame(stat_list)
-        df.to_csv(pathToOpen + '\\' + 'Features.csv', header=headers, index=None)
+        df.to_csv(pathToOpen + '\\' + activity + '_features.csv', header=headers, index=None)
+
+        # print (stat_list)
