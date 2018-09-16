@@ -109,9 +109,15 @@ for subject in subjectList:
 
         df = pd.DataFrame(stat_list)
 
+        # Normalize data
+        df = (df - df.min()) / (df.max() - df.min())
+        # Round all values to 5 d.p.
+        df = df.round(5)
+
         # Insert label
         LABEL = 'Activity'
         labels = np.full(df.shape[0], activity)
         # Insert a column at the front with the right labels
         df.insert(loc=0, column=LABEL, value=labels)
+        headers.insert(0, LABEL)
         df.to_csv(pathToOpen + '\\' + activity + '_features.csv', header=headers, index=None)
