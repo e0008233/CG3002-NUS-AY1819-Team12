@@ -108,4 +108,10 @@ for subject in subjectList:
             stat_list.append(temp_row)
 
         df = pd.DataFrame(stat_list)
+
+        # Insert label
+        LABEL = 'Activity'
+        labels = np.full(df.shape[0], activity)
+        # Insert a column at the front with the right labels
+        df.insert(loc=0, column=LABEL, value=labels)
         df.to_csv(pathToOpen + '\\' + activity + '_features.csv', header=headers, index=None)
