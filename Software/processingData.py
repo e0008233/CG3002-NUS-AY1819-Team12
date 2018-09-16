@@ -2,10 +2,11 @@ import pandas as pd
 import numpy as np
 from sklearn import preprocessing
 from scipy.fftpack import fft
+from pathlib import Path
 import os
 
-path = os.getcwd()
-print (path)
+path = str(Path().resolve().parent)
+print(path)
 
 # Different volunteers
 subjectList = ['Subject1', 'Subject2', 'Subject3', 'Subject4']
@@ -17,11 +18,9 @@ activityList = ['climbingdown','walking','jumping']
 sensorPositionList = ['waist', 'chest','thigh']
 # sensorPositionList = ['waist']
 
-os.listdir(path+'/Data')
-
 for subject in subjectList:
-
     for activity in activityList:
+        # ----------------------- Compiling all sensor data into one file -------------------------
         pathToOpen = path + '\Data' + '\\' + subject + '\\' + activity
         header = ['id']
         count = 0
@@ -42,63 +41,52 @@ for subject in subjectList:
 
                     # add id column
                     if (count == 1):
-                        toAdd = df.iloc[0:len(data), :1]
+                        toAdd = df.iloc[:, :1]
                         combinedData_sensor.append(toAdd)
 
                     # extract columns with value
-                    toAdd = df.iloc[0:len(data), 2:]
+                    toAdd = df.iloc[:, 2:]
                     # change the column names so they won't collide during concatenation
                     toAdd.columns = [str(cname) for cname in
-                                     toAdd.columns + str(count) + '_' + sensorPosition + '_' + sensor]
+                                     toAdd.columns + '_' + sensorPosition + '_' + sensor]
                     combinedData_sensor.append(toAdd)
-        # concatenate them horizontally
+        # concatenate them horizontally into a CSV file
         combinedDataCSV = pd.concat(combinedData_sensor, axis=1)
         combinedDataCSV.dropna(how='any', inplace=True)
         combinedDataCSV.to_csv(pathToOpen + '\\' + 'combinedDataCSV.csv', index=None)
         df = pd.DataFrame(combinedDataCSV)
 
+        # ---------------------------------- Data segmentation ----------------------------------
         # Actual readings start at 2nd column
         data = df.values
-        data = data[0:len(data), 1:]
-
-        # X = preprocessing.normalize(data)
-        X = data
+        X = data[:, 1:]
 
         # get attribute names
-        attriNameList = []
         attriNameList = df.columns[1:]
 
         # create headers for features
         headers = []
-        featureNameList = ['mean', 'median', 'std', 'iqr', 'maximum', 'minimum']
+        featureNameList = ['mean', 'median', 'std', 'iqr', 'max', 'min']
         for attriName in attriNameList:
             for featureName in featureNameList:
                 headers.append(attriName + '_' + featureName)
 
-        #         print (headers)
-
         stat_list = []
         # windows of 2.56 sec and 50% overlap (128 readings/window), details in report section 5
-        window_size = 50;
-        overlap = 25;
+        window_size = 128
+        overlap = window_size // 2
         segment = []
         labels = []
         count = 0
         for i in range(int(len(X) / overlap)):
-            segment.append(X[i * overlap:((i * overlap) + (window_size)), 0:])
+            segment.append(X[i * overlap : ((i * overlap) + window_size), 0:])
 
-            # print out each segment for checking
-        #         for i in range(len(segment)):
-        #             print ("---------------")
-        #             print (segment[i])
-        #             print ("+++++++++++++")
-        #             print (segment[i][0:,1])
-
-        # extract features
+        # ---------------------------------- Feature extraction ----------------------------------
         for i in range(len(segment)):
             temp_row = []
             for j in range(0, np.size(segment[i], 1)):
                 temp = segment[i][0:, j]
+                # TODO: add more features
                 # Mean = sum of everything / no. of data point
                 mean = np.mean(temp)
                 # Median = middle value of sorted
@@ -109,17 +97,15 @@ for subject in subjectList:
                 q75, q25 = np.percentile(temp, [75, 25])
                 iqr = q75 - q25
                 maximum = np.amax(temp)
-                minmum = np.amax(temp)
+                minimum = np.amax(temp)
 
                 temp_row.append(mean)
                 temp_row.append(median)
                 temp_row.append(std)
                 temp_row.append(iqr)
                 temp_row.append(maximum)
-                temp_row.append(minmum)
+                temp_row.append(minimum)
             stat_list.append(temp_row)
-        #         print (stat_list)
+
         df = pd.DataFrame(stat_list)
         df.to_csv(pathToOpen + '\\' + activity + '_features.csv', header=headers, index=None)
-
-        # print (stat_list)
