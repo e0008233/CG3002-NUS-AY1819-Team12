@@ -4,9 +4,10 @@ from sklearn import preprocessing
 from scipy.fftpack import fft
 from pathlib import Path
 import os
+
 path = str(Path().resolve().parent)+'\Data\Sensor'
 activityList = ['uptodown','lefttoright','circle']
-print (path)
+print(path)
 
 for fileName in os.listdir(path):
     for activity in activityList:
@@ -36,7 +37,6 @@ for fileName in os.listdir(path):
             for i in range(len(segment)):
 
                 temp_row = []
-                # print (segment[i])
                 for j in range(0, np.size(segment[i], 1)):
                     temp = segment[i][0:, j]
                     # TODO: add more features
