@@ -15,7 +15,8 @@ for fileName in os.listdir(path):
             df = pd.read_csv(open(path + '\\' + fileName))
 
             df.dropna(how='any', inplace=True)
-            dataSet = df.iloc[:, 1:7:1]
+            dataSet = df.iloc[:, 1:7]
+            print(dataSet.head())
             attriNameList = dataSet.columns[0:]
             X = dataSet.values
             # create headers for features
