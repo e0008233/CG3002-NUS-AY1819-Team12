@@ -66,7 +66,7 @@ for i in range(len(segment)):
 
 df = pd.DataFrame(stat_list)
 # Normalize data
-df = (df - df.min()) / (df.max() - df.min())
+# df = (df - df.min()) / (df.max() - df.min())
 # Round all values to 5 d.p.
 df = df.round(5)
 print (df)
@@ -75,4 +75,5 @@ test_predict = clf.predict(df)
 
 counts = np.bincount(test_predict)
 result = np.argmax(counts)
+print (test_predict)
 print (hashMap[result])
