@@ -4,9 +4,6 @@ import keras
 from keras import optimizers
 from keras.models import Sequential
 from keras.layers import Dense, Activation
-# from keras.wrappers.scikit_learn import KerasClassifier
-from keras.utils import np_utils
-from sklearn.model_selection import cross_val_score
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import confusion_matrix
 from sklearn.metrics import classification_report
@@ -50,7 +47,6 @@ encoder = LabelEncoder()
 encoded_Y = encoder.fit_transform(Y)
 # convert integers to dummy variables (i.e. one hot encoded)
 Y_train = keras.utils.to_categorical(encoded_Y, num_classes=NUM_LABELS)
-# Y_train = encoded_Y
 
 X_test = testDf.drop(testDf.columns[0], axis=1).values
 Y_test = testDf.iloc[:, 0].values.ravel()
@@ -80,20 +76,14 @@ def baseline_model():
 # feed data into model
 # need to define # of iterations(epochs) and batch size
 model = baseline_model()
-# model.fit(X_train, Y_train, validation_data=(X_test,Y_test), epochs=EPOCHS, batch_size=5, verbose=1)
-# estimator = KerasClassifier(build_fn=baseline_model, epochs=EPOCHS, batch_size=5, verbose=0)
 
 
 # validate model and calculate errors and confusion matrix
 # evaluating using K-fold cross-validation
 kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 
-# model.fit(X_train, Y_train)
-
 
 # get results
-# results = cross_val_score(model, X_train, Y_train, cv=10, scoring='accuracy')  #Array of scores of the estimator for each run of the cross validation
-# print("Classification accuracy for {}-fold validation: {:.2f}% (s.d.: {:.2f}%)".format(10, results.mean()*100, results.std()*100))
 cvscores = []
 for train, test in kfold.split(X_train, y):
     # create model
@@ -105,14 +95,6 @@ for train, test in kfold.split(X_train, y):
     # print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
     cvscores.append(scores[1] * 100)
 print("Classification accuracy for 10-fold validation: {:.2f}% (+/- {:.2f}%)\n".format(np.mean(cvscores), np.std(cvscores)))
-
-# print("Classification accuracy for test set: {:.2f}%".format(accuracy_score(Y_test, Y_pred) * 100))
-# print()
-# print("Leave one out:")
-# results = cross_val_score(estimator, X_train, Y_train, cv=num_samples)
-# print("Classification accuracy for LOOCV: {:.2f}% (s.d.: {:.2f}%)".format(results.mean()*100, results.std()*100))
-# print("Classification accuracy for test set: {:.2f}%".format(accuracy_score(Y_test, Y_pred) * 100))
-# print()
 
 
 def format_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7), fontsize=13):
