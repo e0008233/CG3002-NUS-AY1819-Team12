@@ -10,18 +10,19 @@ os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 model = model_from_json(open('model_architecture.json').read())
 model.load_weights('model_weights.h5')
 encoder = joblib.load('encoder.sav')
-print("Loaded model from disk")
+print("Loaded model from disk\n")
 
 
 # path = str(Path().resolve())
 # print(path)
-path = "C:\\Users\\Jelena Neo\\CG3002_Neural_Net\\CG3002_Main\\Data\\Sensor"
+# path = "C:\\Users\\Jelena Neo\\CG3002_Neural_Net\\CG3002_Main\\Data\\Sensor"
+path = os.path.dirname(os.path.abspath(__file__))
+
 
 df = pd.read_csv(path + '\\training_circle.csv')
 # calculations to process data
 df.dropna(how='any', inplace=True)
-X = df.iloc[:, 1:7].values
-# create headers for features
+X = df.iloc[:300, 1:7].values
 stat_list = []
 # windows of 2.56 sec and 50% overlap (128 readings/window), details in report section 5
 window_size = 128
