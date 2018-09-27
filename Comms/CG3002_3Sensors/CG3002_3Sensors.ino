@@ -146,6 +146,36 @@ void setup() {
     ogx = accelgyro.getRotationX();
     ogy = accelgyro.getRotationY();
     ogz = accelgyro.getRotationZ();
+
+
+
+    // sensor 2
+    digitalWrite(SENSOR_1,HIGH);
+    digitalWrite(SENSOR_2,LOW);
+    digitalWrite(SENSOR_3,HIGH);
+    digitalWrite(SENSOR_4,HIGH);
+    accelgyro.initialize();
+    //oax2 = accelgyro.getAccelerationX();
+    //oay2 = accelgyro.getAccelerationY();
+    //oaz2 = accelgyro.getAccelerationZ();
+    ogx2 = accelgyro.getRotationX();
+    ogy2 = accelgyro.getRotationY();
+    ogz2 = accelgyro.getRotationZ();
+    
+    // sensor 3
+    digitalWrite(SENSOR_1,HIGH);
+    digitalWrite(SENSOR_2,HIGH);
+    digitalWrite(SENSOR_3,LOW);
+    digitalWrite(SENSOR_4,HIGH);
+    accelgyro.initialize();
+    //oax3 = accelgyro.getAccelerationX();
+    //oay3 = accelgyro.getAccelerationY();
+    //oaz3 = accelgyro.getAccelerationZ();
+    ogx3 = accelgyro.getRotationX();
+    ogy3 = accelgyro.getRotationY();
+    ogz3 = accelgyro.getRotationZ();
+
+    
     
     while (!Serial); // wait for Leonardo enumeration, others continue immediately
     handshakeOperation();
@@ -343,8 +373,35 @@ void TaskReadAcc2(void *pvParameters)  // This is a task.
     {
       if ( xSemaphoreTake( xBufferMutex, ( TickType_t ) 5 ) == pdTRUE ) {
         //Serial.println(i++);
+       
+
+        digitalWrite(SENSOR_1,HIGH);
+        digitalWrite(SENSOR_2,LOW);
+        digitalWrite(SENSOR_3,HIGH);
+        digitalWrite(SENSOR_4,HIGH);
+    
+        
+        //Serial.print("1: ");
+        accelgyro.getMotion6(&ax2, &ay2, &az2, &gx2, &gy2, &gz2);
+        ax2_f = format_accel(ax2); // scale value to g and shrink to 8bits, data as NUMINTEGERS
+        ay2_f = format_accel(ay2);
+        az2_f = format_accel(az2);
+        gx2_f = format_g(gx2-ogx2); // scale value to d/s and shrink to 8bits, data as NUMINTEGERS
+        gy2_f = format_g(gy2-ogy2);
+        gz2_f = format_g(gz2-ogz2);
+
+        int i = 0;
+
         sensorReadings2[0] = (char) 0;
-        sprintf(sensorReadings2,"|2,%s,%s,%s,%s,%s,%s", ax_c, ay_c, az_c, gx_c, gy_c, gz_c);
+
+        dtostrf(ax2_f, 3, 4, ax2_c);
+        dtostrf(ay2_f, 3, 4, ay2_c);
+        dtostrf(az2_f, 3, 4, az2_c);
+        dtostrf(gx2_f, 3, 2, gx2_c);
+        dtostrf(gy2_f, 3, 2, gy2_c);
+        dtostrf(gz2_f, 3, 2, gz2_c);
+        
+        sprintf(sensorReadings2,"|2,%s,%s,%s,%s,%s,%s", ax2_c, ay2_c, az2_c, gx2_c, gy2_c, gz2_c);
               // sensor 1
         xSemaphoreGive( xBufferMutex );
       }
@@ -365,8 +422,33 @@ void TaskReadAcc3(void *pvParameters)  // This is a task.
     if ( xSemaphoreTake( xSerialSemaphoreSensor3, ( TickType_t ) 5 ) == pdTRUE )
     {
       if ( xSemaphoreTake( xBufferMutex, ( TickType_t ) 5 ) == pdTRUE ) {
+
+        digitalWrite(SENSOR_1,HIGH);
+        digitalWrite(SENSOR_2,HIGH);
+        digitalWrite(SENSOR_3,LOW);
+        digitalWrite(SENSOR_4,HIGH);
+
+        accelgyro.getMotion6(&ax3, &ay3, &az3, &gx3, &gy3, &gz3);
+        ax3_f = format_accel(ax3); // scale value to g and shrink to 8bits, data as NUMINTEGERS
+        ay3_f = format_accel(ay3);
+        az3_f = format_accel(az3);
+        gx3_f = format_g(gx2-ogx3); // scale value to d/s and shrink to 8bits, data as NUMINTEGERS
+        gy3_f = format_g(gy2-ogy3);
+        gz3_f = format_g(gz2-ogz3);
+
+        dtostrf(ax3_f, 3, 4, ax3_c);
+        dtostrf(ay3_f, 3, 4, ay3_c);
+        dtostrf(az3_f, 3, 4, az3_c);
+        dtostrf(gx3_f, 3, 2, gx3_c);
+        dtostrf(gy3_f, 3, 2, gy3_c);
+        dtostrf(gz3_f, 3, 2, gz3_c);
+
+        int i = 0;
+
+
+        
         sensorReadings3[0] = (char) 0;
-        sprintf(sensorReadings3,"|3,%s,%s,%s,%s,%s,%s", ax_c, ay_c, az_c, gx_c, gy_c, gz_c);
+        sprintf(sensorReadings3,"|3,%s,%s,%s,%s,%s,%s", ax3_c, ay3_c, az3_c, gx3_c, gy3_c, gz3_c);
         xSemaphoreGive( xBufferMutex );
       }
     }
