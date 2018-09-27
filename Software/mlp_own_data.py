@@ -20,7 +20,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
 
 EPOCHS = 50
-NUM_LABELS = 3
+NUM_LABELS = 5
 NUM_NEURONS = 10
 
 # to remove the below section when actual data comes
