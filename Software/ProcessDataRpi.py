@@ -6,7 +6,7 @@ from pathlib import Path
 import os
 
 path = str(Path().resolve().parent)+'\Data\Sensor'
-activityList = ['uptodown','lefttoright','circle']
+activityList = ['Wipers','NumberSeven','Chicken', 'SideStep', 'Turnclap']
 print(path)
 
 for fileName in os.listdir(path):
@@ -15,7 +15,7 @@ for fileName in os.listdir(path):
             df = pd.read_csv(open(path + '\\' + fileName))
 
             df.dropna(how='any', inplace=True)
-            dataSet = df.iloc[:, 1:7]
+            dataSet = df.iloc[:, 1:]
             attriNameList = dataSet.columns[0:]
             X = dataSet.values
             # create headers for features
