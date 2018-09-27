@@ -66,8 +66,8 @@ def baseline_model():
     model.add(Dense(NUM_LABELS, activation='softmax'))  # output layer
     # Compile model
     sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-    # model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy']) #might wanna try other loss functions
-    model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy']) #might wanna try other loss functions
+    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy']) #might wanna try other loss functions
+    # model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy']) #might wanna try other loss functions
     # https://www.dlology.com/blog/quick-notes-on-how-to-choose-optimizer-in-keras/
     # print(model.summary())
     return model
