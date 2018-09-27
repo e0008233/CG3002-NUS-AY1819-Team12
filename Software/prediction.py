@@ -3,6 +3,7 @@ import pandas as pd
 from ProcessData import extract_features
 from keras.models import model_from_json
 from sklearn.externals import joblib
+from keras import optimizers
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
@@ -11,7 +12,8 @@ os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 model = model_from_json(open('model_architecture.json').read())
 model.load_weights('model_weights.h5')
 encoder = joblib.load('encoder.sav')
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
+model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
 activity_list = encoder.inverse_transform([0, 1, 2])
 
 
