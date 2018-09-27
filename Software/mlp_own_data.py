@@ -30,6 +30,7 @@ np.random.seed(seed)
 
 # load dataset
 file_path = str(Path().resolve()) + '\CG3002_Main\Data\Sensor'
+# file_path = os.path.dirname(os.path.abspath(__file__))
 print(file_path)
 mainDf = pd.read_csv(file_path + "\combinedFeatureDataCSV_Arduino.csv")
 
