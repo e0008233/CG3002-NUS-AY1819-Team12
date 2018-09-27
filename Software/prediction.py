@@ -1,6 +1,5 @@
 import numpy as np
-import pandas as pd
-from ProcessData import extract_features
+import ProcessData
 from keras.models import model_from_json
 from sklearn.externals import joblib
 from keras import optimizers
@@ -18,7 +17,7 @@ activity_list = encoder.inverse_transform([0, 1, 2])
 
 
 def predict(data):
-    features = extract_features(data)
+    features = ProcessData.extract_features(data)
     mlp_result = model.predict_classes(features)
     rf_result = model.predict(features)
     # find the most common label in result
