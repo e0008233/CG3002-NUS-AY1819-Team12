@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from ProcessData import extract_features
 from keras.models import model_from_json
 from sklearn.externals import joblib
 import os
@@ -12,6 +13,7 @@ model.load_weights('model_weights.h5')
 encoder = joblib.load('encoder.sav')
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 activity_list = encoder.inverse_transform([0, 1, 2])
+
 
 def predict(data):
     features = extract_features(data)
