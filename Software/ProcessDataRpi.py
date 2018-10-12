@@ -77,10 +77,8 @@ for fileName in os.listdir(path):
                 stat_list.append(temp_row)
 
             df = pd.DataFrame(stat_list)
-
             # Normalize data
-            df = (df - df.min()) / (df.max() - df.min())
-            # Round all values to 5 d.p.
+            df = normalize(df)
             df = df.round(5)
 
             # Insert label
@@ -89,7 +87,7 @@ for fileName in os.listdir(path):
             # Insert a column at the front with the right labels
             df.insert(loc=0, column=LABEL, value=labels)
             headers.insert(0, LABEL)
-            df.to_csv(path + '\\' + activity + '_features.csv', header=headers, index=None)
+            df.to_csv(path + '\\' + fileName[:-4] + '_features.csv', header=headers, index=None)
 
 list = []
 for fileName in os.listdir(path):
