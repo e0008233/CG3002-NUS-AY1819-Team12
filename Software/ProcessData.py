@@ -23,12 +23,13 @@ def extract_features(segment):
         # iqr = Inter-Quartile Range, 75th percentile - 25th percentile
         q75, q25 = np.percentile(temp, [75, 25])
         iqr = q75 - q25
-        maximum = np.max(temp)
-        minimum = np.min(temp)
 
         temp_row.append(mean)
         temp_row.append(median)
         temp_row.append(std)
         temp_row.append(iqr)
-        norm_row = [normalize_val(x, minimum, maximum) for x in temp_row]
+
+    maximum = np.max(temp_row)
+    minimum = np.min(temp_row)
+    norm_row = [normalize_val(x, minimum, maximum) for x in temp_row]
     return norm_row
