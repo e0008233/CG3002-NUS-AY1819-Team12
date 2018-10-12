@@ -65,6 +65,8 @@ int16_t currentSensor;
 int16_t voltageSensor;
 float currentValue;
 float voltageValue;
+float powerValue;
+int32_t energyValue;
 
 int msgID;
 int checksum;
@@ -91,10 +93,11 @@ char energy_c[NUMCHAR];
 #define SENSOR_4 7
 #define CURRENT A0
 #define VOLTAGE A1
-#define VOLTAGEREF 5.0
+#define VOLTAGEREF 3.3
 #define RESISTSHUNT 0.1
 #define ACCELRANGE 2.0
 #define GYRORANGE 250.0
+#define PERIOD 0.02
 
 void TaskReadAcc1( void *pvParameters );
 void TaskReadAcc2( void *pvParameters );
@@ -244,7 +247,7 @@ void setup() {
       ,  (const portCHAR *) "AnalogRead"
       ,  128 // This stack size can be checked & adjusted by reading Highwater
       ,  NULL
-      ,  1  // priority
+      ,  2  // priority
       ,  NULL );
    
 
@@ -270,6 +273,13 @@ int32_t format_voltage(int16_t a) {
     return (int32_t) (a * VOLTAGEREF * 2 * NUMDIGITS / 1023.0);
 }
 
+float get_power (float i, float v) {
+    return (float) (i * v);
+}
+
+float get_energy (float p) {
+    return (float) (p * PERIOD * 1000);
+}
 
 char intToChar (int32_t num, char* array) {
     //return dtostrf(num/NUMDIGITS, 3, 2, array);
@@ -309,17 +319,12 @@ void TaskReadAcc1(void *pvParameters)  // This is a task.
 {
   (void) pvParameters;
   int i = 0;
-  TickType_t xLastWakeTime;
-  const TickType_t xFrequency = 1;
-
-  xLastWakeTime = xTaskGetTickCount();
   for (;;)
   {
-    vTaskDelayUntil( &xLastWakeTime, xFrequency );
-    if ( xSemaphoreTake( xSerialSemaphoreSensor1, ( TickType_t ) 1 ) == pdTRUE )
+    if ( xSemaphoreTake( xSerialSemaphoreSensor1, ( TickType_t ) 5 ) == pdTRUE )
     {
       // We were able to obtain or "Take" the semaphore and can now access the shared resource.
-      if ( xSemaphoreTake( xBufferMutex, ( TickType_t ) 1 ) == pdTRUE ) {
+      if ( xSemaphoreTake( xBufferMutex, ( TickType_t ) 5 ) == pdTRUE ) {
 
         digitalWrite(SENSOR_1,LOW);
         digitalWrite(SENSOR_2,HIGH);
@@ -328,9 +333,6 @@ void TaskReadAcc1(void *pvParameters)  // This is a task.
     
         //Serial.print("1: ");
         accelgyro.getMotion6(&ax, &ay, &az, &gx, &gy, &gz);
-        if (ax == 0 && ay == 0 && az == 0) {
-          accelgyro.initialize();
-        }
         ax_f = format_accel(ax); // scale value to g and shrink to 8bits, data as NUMINTEGERS
         ay_f = format_accel(ay);
         az_f = format_accel(az);
@@ -338,6 +340,10 @@ void TaskReadAcc1(void *pvParameters)  // This is a task.
         gy_f = format_g(gy-ogy);
         gz_f = format_g(gz-ogz);
 
+        // sprintf(sensorReadings, "HAHA-%f\n", ax_f/NUMDIGITS);
+        //memset(sensorReadings, 0, 100);
+        //memcpy(sensorReadings, &ax_c ,100 );
+        //memcpy(&tree[200], two, 200);  
         int i = 0;
 
         sensorReadings1[0] = (char) 0;
@@ -354,6 +360,8 @@ void TaskReadAcc1(void *pvParameters)  // This is a task.
         xSemaphoreGive( xBufferMutex );
       }
     }
+
+    vTaskDelay(1);  // one tick delay (15ms) in between reads for stability
   }
 }
 
@@ -363,16 +371,11 @@ void TaskReadAcc2(void *pvParameters)  // This is a task.
 {
   (void) pvParameters;
   int i = 0;
-  TickType_t xLastWakeTime;
-  const TickType_t xFrequency = 1;
-
-  xLastWakeTime = xTaskGetTickCount();
   for (;;)
   {
-    vTaskDelayUntil( &xLastWakeTime, xFrequency );
-    if ( xSemaphoreTake( xSerialSemaphoreSensor2, ( TickType_t ) 1 ) == pdTRUE )
+    if ( xSemaphoreTake( xSerialSemaphoreSensor2, ( TickType_t ) 5 ) == pdTRUE )
     {
-      if ( xSemaphoreTake( xBufferMutex, ( TickType_t ) 1 ) == pdTRUE ) {
+      if ( xSemaphoreTake( xBufferMutex, ( TickType_t ) 5 ) == pdTRUE ) {
         //Serial.println(i++);
        
 
@@ -384,10 +387,6 @@ void TaskReadAcc2(void *pvParameters)  // This is a task.
         
         //Serial.print("1: ");
         accelgyro.getMotion6(&ax2, &ay2, &az2, &gx2, &gy2, &gz2);
-        if (ax2 == 0 && ay2 == 0 && az2 == 0) {
-          accelgyro.initialize();
-        }
-        
         ax2_f = format_accel(ax2); // scale value to g and shrink to 8bits, data as NUMINTEGERS
         ay2_f = format_accel(ay2);
         az2_f = format_accel(az2);
@@ -411,6 +410,8 @@ void TaskReadAcc2(void *pvParameters)  // This is a task.
         xSemaphoreGive( xBufferMutex );
       }
     }
+
+    vTaskDelay(1);  // one tick delay (15ms) in between reads for stability
   }
 }
 
@@ -420,17 +421,11 @@ void TaskReadAcc3(void *pvParameters)  // This is a task.
 {
   (void) pvParameters;
   int i = 0;
-  TickType_t xLastWakeTime;
-  const TickType_t xFrequency = 1;
-
-
-  xLastWakeTime = xTaskGetTickCount();
   for (;;)
   {
-    vTaskDelayUntil( &xLastWakeTime, xFrequency );
-    if ( xSemaphoreTake( xSerialSemaphoreSensor3, ( TickType_t ) 1 ) == pdTRUE )
+    if ( xSemaphoreTake( xSerialSemaphoreSensor3, ( TickType_t ) 5 ) == pdTRUE )
     {
-      if ( xSemaphoreTake( xBufferMutex, ( TickType_t ) 1 ) == pdTRUE ) {
+      if ( xSemaphoreTake( xBufferMutex, ( TickType_t ) 5 ) == pdTRUE ) {
 
         digitalWrite(SENSOR_1,HIGH);
         digitalWrite(SENSOR_2,HIGH);
@@ -438,9 +433,6 @@ void TaskReadAcc3(void *pvParameters)  // This is a task.
         digitalWrite(SENSOR_4,HIGH);
 
         accelgyro.getMotion6(&ax3, &ay3, &az3, &gx3, &gy3, &gz3);
-        if (ax3 == 0 && ay3 == 0 && az3 == 0) {
-          accelgyro.initialize();
-        }
         ax3_f = format_accel(ax3); // scale value to g and shrink to 8bits, data as NUMINTEGERS
         ay3_f = format_accel(ay3);
         az3_f = format_accel(az3);
@@ -464,6 +456,8 @@ void TaskReadAcc3(void *pvParameters)  // This is a task.
         xSemaphoreGive( xBufferMutex );
       }
     }
+
+    vTaskDelay(1);  // one tick delay (15ms) in between reads for stability
   }
 }
 
@@ -471,33 +465,34 @@ void TaskReadAcc3(void *pvParameters)  // This is a task.
 void TaskReadPower(void *pvParameters)  // This is a task.
 {
   (void) pvParameters;
-  TickType_t xLastWakeTime;
-  const TickType_t xFrequency = 4;
   int i = 0;
-
-  xLastWakeTime = xTaskGetTickCount();
-
   for (;;)
   {
-    if ( xSemaphoreTake( xSerialSemaphorePower, ( TickType_t ) 1 ) == pdTRUE )
+    if ( xSemaphoreTake( xSerialSemaphorePower, ( TickType_t ) 5 ) == pdTRUE )
     {
-      if ( xSemaphoreTake( xBufferMutex, ( TickType_t ) 1 ) == pdTRUE ) {
+      if ( xSemaphoreTake( xBufferMutex, ( TickType_t ) 5 ) == pdTRUE ) {
 
         currentSensor = analogRead(CURRENT); // get raw reading
-        currentValue = format_current(currentSensor)/NUMDIGITS; // scale value to A and convert to int
+        currentValue = format_current(currentSensor)*1000/NUMDIGITS; // scale value to A and convert to int
         
         voltageSensor = analogRead(VOLTAGE); // get raw reading
         voltageValue = format_voltage(voltageSensor)/NUMDIGITS; // scale value to V and convert to int
+      
+        powerValue = get_power(currentValue, voltageValue); // scale value to W convert to int
+        
+        energyValue = get_energy(powerValue); // calculate energy
         
         dtostrf(currentValue, 3, 4, current_c);
         dtostrf(voltageValue, 3, 4, voltage_c);
+        dtostrf(powerValue, 3, 4, power_c);
+        dtostrf(energyValue, 3, 1, energy_c);
 
         powerReadings[0] = (char) 0;
-        sprintf(powerReadings,"|%s,%s", current_c, voltage_c);
+        sprintf(powerReadings,"|%s,%s,%s,%s", current_c, voltage_c, power_c, energy_c);
         xSemaphoreGive( xBufferMutex );
       }
     }
-     vTaskDelayUntil( &xLastWakeTime, xFrequency );
+    vTaskDelay(4);  // four tick delay (15ms) since we are NOT reading power that often
   }
 }
 
@@ -539,14 +534,11 @@ void TransmitMessage(char message[], int msgLength) {
 void TaskSendData(void *pvParameters)  // This is a task.
 {
   (void) pvParameters;
-  TickType_t xLastWakeTime;
-  const TickType_t xPeriod = pdMS_TO_TICKS( 50 );
-  xLastWakeTime = xTaskGetTickCount();
 
   for (;;)
   {
-    vTaskDelayUntil( &xLastWakeTime, xPeriod ); 
-    if ( xSemaphoreTake( xBufferMutex, ( TickType_t ) 2 ) == pdTRUE ) {
+    
+    if ( xSemaphoreTake( xBufferMutex, ( TickType_t ) 20 ) == pdTRUE ) {
       //if Buffer Queue not empty, send all from buffer first
 
       if (handshakeCount == 4) {
@@ -636,5 +628,7 @@ void TaskSendData(void *pvParameters)  // This is a task.
       xSemaphoreGive( xSerialSemaphoreSensor3 );
       xSemaphoreGive( xSerialSemaphorePower );
      }
+
+    vTaskDelay(1);  // one tick delay (15ms) in between reads for stability
   }
 }
