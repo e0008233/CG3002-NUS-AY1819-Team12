@@ -7,11 +7,11 @@ import os
 
 WINDOW_SIZE = 128
 
-path = str(Path().resolve().parent) + '\Data'
+path = str(Path().resolve().parent) + '\Data\Subject'
 print(path)
 
 # Different volunteers
-subjectList = ['Subject1', 'Subject2', 'Subject3', 'Subject4']
+subjectList = ['Subject3']
 # subjectList = ['Subject1']
 # Different activity classification
 activityList = ['climbingdown','walking','jumping']

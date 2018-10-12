@@ -2,6 +2,8 @@ from sklearn.externals import joblib
 from pathlib import Path
 import pandas as pd
 import numpy as np
+from sklearn import preprocessing
+
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report
 from sklearn.metrics import confusion_matrix
@@ -63,13 +65,14 @@ for i in range(len(segment)):
         temp_row.append(minimum)
     stat_list.append(temp_row)
 
-
+# stat_list = preprocessing.normalize(stat_list)
 df = pd.DataFrame(stat_list)
 # Normalize data
-# df = (df - df.min()) / (df.max() - df.min())
+df = (df - df.min()) / (df.max() - df.min())
 # Round all values to 5 d.p.
 df = df.round(5)
 print (df)
+
 df = pd.DataFrame(stat_list)
 test_predict = clf.predict(df)
 

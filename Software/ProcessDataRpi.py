@@ -3,6 +3,8 @@ import numpy as np
 from sklearn import preprocessing
 from scipy.fftpack import fft
 from pathlib import Path
+from sklearn import preprocessing
+
 import os
 path = str(Path().resolve().parent)+'\Data\Sensor'
 activityList = ['uptodown','lefttoright','circle']
@@ -60,6 +62,7 @@ for fileName in os.listdir(path):
                     temp_row.append(minimum)
                 stat_list.append(temp_row)
 
+            # stat_list = preprocessing.normalize(stat_list)
             df = pd.DataFrame(stat_list)
 
             # Normalize data

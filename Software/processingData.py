@@ -7,7 +7,7 @@ import os
 
 WINDOW_SIZE = 128
 
-path = str(Path().resolve().parent) + '\Data'
+path = str(Path().resolve().parent) + '\Data\Subject'
 print(path)
 
 # Different volunteers
