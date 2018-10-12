@@ -1,5 +1,14 @@
 import numpy as np
 
+
+def normalize_val(num, min_value, max_value):
+    if min_value < max_value:
+        return (num - min_value) / (max_value - min_value)
+    if min_value > 0:
+        return min_value / (min_value + 1)
+    return min_value / (min_value - 1)
+
+
 def extract_features(segment):
 
     temp_row = []
@@ -14,13 +23,12 @@ def extract_features(segment):
         # iqr = Inter-Quartile Range, 75th percentile - 25th percentile
         q75, q25 = np.percentile(temp, [75, 25])
         iqr = q75 - q25
-        maximum = np.amax(temp)
-        minimum = np.amax(temp)
+        maximum = np.max(temp)
+        minimum = np.min(temp)
 
         temp_row.append(mean)
         temp_row.append(median)
         temp_row.append(std)
         temp_row.append(iqr)
-        temp_row.append(maximum)
-        temp_row.append(minimum)
-    return temp_row
+        norm_row = [normalize_val(x, minimum, maximum) for x in temp_row]
+    return norm_row
