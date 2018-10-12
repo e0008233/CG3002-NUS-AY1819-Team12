@@ -25,6 +25,14 @@ def normalize(df):
             result[col] = min_value / (min_value - 1)
     return result
 
+
+def normalize_val(num, min_value, max_value):
+    if min_value < max_value:
+        return (num - min_value) / (max_value - min_value)
+    if min_value > 0:
+        return min_value / (min_value + 1)
+    return min_value / (min_value - 1)
+
 for fileName in os.listdir(path):
     for activity in activityList_lower:
         if fileName.endswith(".csv") and fileName.find(activity) != -1 and fileName.find('feature') == -1:
@@ -36,7 +44,7 @@ for fileName in os.listdir(path):
             X = dataSet.values
             # create headers for features
             headers = []
-            featureNameList = ['mean', 'median', 'std', 'iqr', 'max', 'min']
+            featureNameList = ['mean', 'median', 'std', 'iqr']
             for attriName in attriNameList:
                 for featureName in featureNameList:
                     headers.append(attriName + '_' + featureName)
@@ -44,17 +52,17 @@ for fileName in os.listdir(path):
             # windows of 2.56 sec and 50% overlap (128 readings/window), details in report section 5
             window_size = 128
             overlap = window_size // 2
-            segment = []
+            segments = []
             labels = []
             for i in range(int(len(X) / overlap)):
-                segment.append(X[i * overlap: ((i * overlap) + window_size), 0:])
+                segments.append(X[i * overlap: ((i * overlap) + window_size), 0:])
 
             # ---------------------------------- Feature extraction ----------------------------------
-            for i in range(len(segment)):
+            for i in range(len(segments)):
 
                 temp_row = []
-                for j in range(0, np.size(segment[i], 1)):
-                    temp = segment[i][0:, j]
+                for j in range(0, np.size(segments[i], 1)):
+                    temp = segments[i][0:, j]
                     # TODO: add more features
                     # Mean = sum of everything / no. of data point
                     mean = np.mean(temp)
@@ -65,20 +73,20 @@ for fileName in os.listdir(path):
                     # iqr = Inter-Quartile Range, 75th percentile - 25th percentile
                     q75, q25 = np.percentile(temp, [75, 25])
                     iqr = q75 - q25
-                    maximum = np.max(temp)
-                    minimum = np.min(temp)
+
 
                     temp_row.append(mean)
                     temp_row.append(median)
                     temp_row.append(std)
                     temp_row.append(iqr)
-                    temp_row.append(maximum)
-                    temp_row.append(minimum)
-                stat_list.append(temp_row)
+                maximum = np.max(temp_row)
+                minimum = np.min(temp_row)
+                norm_row = [normalize_val(x, minimum, maximum) for x in temp_row]
+                stat_list.append(norm_row)
 
             df = pd.DataFrame(stat_list)
             # Normalize data
-            df = normalize(df)
+            # df = normalize(df)
             df = df.round(5)
 
             # Insert label
