@@ -7,10 +7,26 @@ import os
 
 path = str(Path().resolve().parent)+'\Data\Sensor'
 activityList = ['Wipers','NumberSeven','Chicken', 'SideStep', 'Turnclap']
+activityList_lower = [activity.lower() for activity in activityList]
+# print(activityList_lower)
 print(path)
 
+
+def normalize(df):
+    result = df.copy()
+    for col in df.columns:
+        max_value = df[col].max()
+        min_value = df[col].min()
+        if min_value < max_value:
+            result[col] = (df[col] - min_value) / (max_value - min_value)
+        elif min_value > 0:
+            result[col] = min_value / (min_value + 1)
+        else:
+            result[col] = min_value / (min_value - 1)
+    return result
+
 for fileName in os.listdir(path):
-    for activity in activityList:
+    for activity in activityList_lower:
         if fileName.endswith(".csv") and fileName.find(activity) != -1 and fileName.find('feature') == -1:
             df = pd.read_csv(open(path + '\\' + fileName))
 
