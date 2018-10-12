@@ -6,9 +6,10 @@ from pathlib import Path
 from sklearn import preprocessing
 
 import os
+
 path = str(Path().resolve().parent)+'\Data\Sensor'
-activityList = ['uptodown','lefttoright','circle']
-print (path)
+activityList = ['Wipers','NumberSeven','Chicken', 'SideStep', 'Turnclap']
+print(path)
 
 for fileName in os.listdir(path):
     for activity in activityList:
@@ -16,7 +17,7 @@ for fileName in os.listdir(path):
             df = pd.read_csv(open(path + '\\' + fileName))
 
             df.dropna(how='any', inplace=True)
-            dataSet = df.iloc[:, 1:7:1]
+            dataSet = df.iloc[:, 1:]
             attriNameList = dataSet.columns[0:]
             X = dataSet.values
             # create headers for features
@@ -38,7 +39,6 @@ for fileName in os.listdir(path):
             for i in range(len(segment)):
 
                 temp_row = []
-                # print (segment[i])
                 for j in range(0, np.size(segment[i], 1)):
                     temp = segment[i][0:, j]
                     # TODO: add more features
@@ -51,8 +51,8 @@ for fileName in os.listdir(path):
                     # iqr = Inter-Quartile Range, 75th percentile - 25th percentile
                     q75, q25 = np.percentile(temp, [75, 25])
                     iqr = q75 - q25
-                    maximum = np.amax(temp)
-                    minimum = np.amax(temp)
+                    maximum = np.max(temp)
+                    minimum = np.min(temp)
 
                     temp_row.append(mean)
                     temp_row.append(median)
@@ -78,13 +78,12 @@ for fileName in os.listdir(path):
             headers.insert(0, LABEL)
             df.to_csv(path + '\\' + activity + '_features.csv', header=headers, index=None)
 
-frame = pd.DataFrame()
 list = []
 for fileName in os.listdir(path):
     if fileName.endswith(".csv") and fileName.find("feature") != -1 and fileName.find("combined") == -1:
         df = pd.read_csv(open(path + '\\' + fileName))
         df.dropna(how='any',inplace = True)
         list.append(df)
-frame = pd.concat(list,sort=True)
+frame = pd.concat(list)
 
 frame.to_csv(path + '\\' + 'combinedFeatureDataCSV_Arduino.csv', index=None)

@@ -1,6 +1,6 @@
 import numpy as np
 
-def extractFeatures(segment):
+def extract_features(segment):
 
     temp_row = []
     for i in range(0, np.size(segment, 1)):
