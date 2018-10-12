@@ -25,8 +25,8 @@ NUM_NEURONS = 10
 
 # to remove the below section when actual data comes
 # fix random seed for reproducibility
-seed = 7
-np.random.seed(seed)
+# seed = 7
+# np.random.seed(seed)
 
 # load dataset
 file_path = str(Path().resolve()) + '\CG3002_Main\Data\Sensor'
@@ -81,7 +81,8 @@ model = baseline_model()
 
 # validate model and calculate errors and confusion matrix
 # evaluating using K-fold cross-validation
-kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+# kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
+kfold = StratifiedKFold(n_splits=10, shuffle=True)
 
 
 # get results
