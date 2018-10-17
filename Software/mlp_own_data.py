@@ -29,7 +29,7 @@ NUM_NEURONS = 10
 # np.random.seed(seed)
 
 # load dataset
-file_path = str(Path().resolve()) + '\CG3002_Main\Data\Sensor'
+file_path = 'C:\\Users\\Jelena Neo\\CG3002_Neural_Net\\CG3002_Main\\Data\\Sensor'
 # file_path = os.path.dirname(os.path.abspath(__file__))
 print(file_path)
 mainDf = pd.read_csv(file_path + "\combinedFeatureDataCSV_Arduino.csv")
@@ -142,5 +142,3 @@ filename = 'encoder.sav'
 joblib.dump(encoder, filename)
 print()
 print("Saved model to disk")
-
-
