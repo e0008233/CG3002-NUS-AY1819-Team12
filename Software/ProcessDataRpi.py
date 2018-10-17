@@ -12,20 +12,6 @@ activityList_lower = [activity.lower() for activity in activityList]
 print(path)
 
 
-def normalize(df):
-    result = df.copy()
-    for col in df.columns:
-        max_value = df[col].max()
-        min_value = df[col].min()
-        if min_value < max_value:
-            result[col] = (df[col] - min_value) / (max_value - min_value)
-        elif min_value > 0:
-            result[col] = min_value / (min_value + 1)
-        else:
-            result[col] = min_value / (min_value - 1)
-    return result
-
-
 def normalize_val(num, min_value, max_value):
     if min_value < max_value:
         return (num - min_value) / (max_value - min_value)
@@ -58,6 +44,7 @@ for fileName in os.listdir(path):
                 segments.append(X[i * overlap: ((i * overlap) + window_size), 0:])
 
             # ---------------------------------- Feature extraction ----------------------------------
+            # Note: segments is an array of 2-d array. each segment in segments is a 2-d array
             for i in range(len(segments)):
 
                 temp_row = []
