@@ -15,6 +15,8 @@ model.load_weights('model_weights.h5')
 encoder = joblib.load('encoder.sav')
 sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
 model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+# Note: the below line will cause a deprecation warning about truth value of array. Safe to ignore. to see more:
+# https://stackoverflow.com/questions/48687375/deprecation-error-in-sklearn-about-empty-array-without-any-empty-array-in-my-cod
 activity_list = encoder.inverse_transform([0, 1, 2, 3, 4])
 print(activity_list)
 
