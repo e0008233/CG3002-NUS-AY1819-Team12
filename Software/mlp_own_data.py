@@ -60,7 +60,7 @@ print("Number of observations in test data: {} ({:.2f}%)\n".format(X_test.shape[
 
 # define baseline model
 # MLP using back propagation
-def baseline_model():
+def create_model():
     # create model
     model = Sequential()
     model.add(Dense(NUM_NEURONS, input_dim=input_dim, activation='relu'))   #input layer
@@ -76,7 +76,7 @@ def baseline_model():
 
 # feed data into model
 # need to define # of iterations(epochs) and batch size
-model = baseline_model()
+model = create_model()
 
 
 # validate model and calculate errors and confusion matrix
@@ -89,9 +89,9 @@ kfold = StratifiedKFold(n_splits=10, shuffle=True)
 cvscores = []
 for train, test in kfold.split(X_train, y):
     # create model
-    model = baseline_model()
     # Fit the model
     model.fit(X_train[train], Y_train[train], epochs=EPOCHS, batch_size=5, verbose=0)
+    model = create_model()
     # evaluate the model
     scores = model.evaluate(X_train[test], Y_train[test], verbose=0)
     # print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
