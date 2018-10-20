@@ -38,7 +38,7 @@ df, testDf = train_test_split(mainDf, test_size=0.25)
 # prepare data for processing i.e. extract labels etc.
 X_train = df.drop(df.columns[0], axis=1)  # input var
 num_samples = X_train.shape[0]
-input_dim = X_train.shape[1]    # also the # of features
+input_dim = X_train.shape[1]    # also the num of features
 X_train = X_train.values
 y = df.iloc[:, 0]  # output var
 Y = y.values.ravel()
@@ -58,7 +58,7 @@ temp = num_samples + X_test.shape[0]
 print("Number of observations in training data: {} ({:.2f}%)".format(num_samples, num_samples / temp * 100))
 print("Number of observations in test data: {} ({:.2f}%)\n".format(X_test.shape[0], X_test.shape[0] / temp * 100))
 
-# define baseline model
+# create model
 # MLP using back propagation
 def create_model():
     # create model
@@ -78,9 +78,20 @@ def create_model():
 # need to define # of iterations(epochs) and batch size
 model = create_model()
 
+# Fit the model
+# batch_size: The smaller the batch the less accurate the estimate of the gradient will be
+model.fit(X_train, Y_train, epochs=EPOCHS, batch_size=5, verbose=0)
 
-# validate model and calculate errors and confusion matrix
-# evaluating using K-fold cross-validation
+# Prediction on test set
+Y_pred = model.predict_classes(X_test)
+labels = np.unique(encoded_Y)
+targetNames = encoder.inverse_transform(labels)
+print("Classification accuracy on test set: {:.2f}%\n".format(accuracy_score(encoded_Y_test, Y_pred) * 100))
+print('Classification report:')
+report = classification_report(encoded_Y_test, Y_pred, target_names=targetNames)
+print(report)
+
+# Validate model using k-fole cross-validation and calculate errors and confusion matrix
 # kfold = StratifiedKFold(n_splits=10, shuffle=True, random_state=seed)
 kfold = StratifiedKFold(n_splits=10, shuffle=True)
 
@@ -89,9 +100,9 @@ kfold = StratifiedKFold(n_splits=10, shuffle=True)
 cvscores = []
 for train, test in kfold.split(X_train, y):
     # create model
+    model = create_model()
     # Fit the model
     model.fit(X_train[train], Y_train[train], epochs=EPOCHS, batch_size=5, verbose=0)
-    model = create_model()
     # evaluate the model
     scores = model.evaluate(X_train[test], Y_train[test], verbose=0)
     # print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
@@ -116,14 +127,6 @@ def format_confusion_matrix(confusion_matrix, class_names, figsize=(10, 7), font
     plt.tight_layout()
     return plt
 
-
-Y_pred = model.predict_classes(X_test)
-labels = np.unique(encoded_Y)
-targetNames = encoder.inverse_transform(labels)
-print("Classification accuracy on test set: {:.2f}%\n".format(accuracy_score(encoded_Y_test, Y_pred) * 100))
-print('Classification report:')
-report = classification_report(encoded_Y_test, Y_pred, target_names=targetNames)
-print(report)
 
 print("Parameters used:")
 print("Number of neurons: {}".format(NUM_NEURONS))
