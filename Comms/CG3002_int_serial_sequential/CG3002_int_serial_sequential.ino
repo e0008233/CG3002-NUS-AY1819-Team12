@@ -435,7 +435,7 @@ void TaskSendData(void *pvParameters)  // This is a task.
     if (ackResult == 1) {
       handshakeCount = 0; //Message Delivery Successful, reset handshake count if > 1
     } else if (ackResult == 0 || ackResult == 2) {
-      handshakeCount++; > //Message Delivery UNSuccessful
+      handshakeCount++; //Message Delivery UNSuccessful
     }
 
 
