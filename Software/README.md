@@ -4,7 +4,7 @@ There are multiple files used over the development of the project, but the final
 
 
 ## Readme For files in MLP folders
-Note: configure the file paths properly to link to the right folders.
+Note: configure the file paths properly to link to the right folders. Run the files using Python3.
 
 If there are warnings shown, it is safe to ignore them according to research online.
 
