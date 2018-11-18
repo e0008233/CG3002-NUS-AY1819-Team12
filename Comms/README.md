@@ -2,7 +2,7 @@
 
 There are multiple arduino files that we have used over the development of the project, but the final file we are using for our demo is CG3002_int_serial_sequential
 
-Upload the file **CG3002_int_serial_sequential.ino** to the arduino and connect the sensors to the appropriate pin
+Upload the file **CG3002_int_serial_sequential.ino** to the arduino and connect the sensors to the appropriate pins
 
 1) Send serial 'H' to the Arduino, the Arduino should return 'A' via serial.
 2) Send 'A' via serial to the Arduino again, and the Arduino should start sending a string of sensor readings.
