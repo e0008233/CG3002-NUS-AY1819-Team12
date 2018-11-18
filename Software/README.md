@@ -8,21 +8,23 @@ Note: configure the file paths properly to link to the right folders.
 
 If there are warnings shown, it is safe to ignore them according to research online.
 
-EDA.py: used for exploratory data analysis. 
 
-mlp_model.py: used to train and do validation fo the MLP model.
+`EDA.py`: used for exploratory data analysis. 
 
-prediction.py: used in real-time recognition to load and predict dance moves
+`mlp_model.py`: used to train and do validation fo the MLP model.
 
-ProcessData.py: used to preprocess data during real-time recognition
+`prediction.py`: used in real-time recognition to load and predict dance moves
 
-ProcessDataRpi.py: used to preprocess data for training the model
+`ProcessData.py`: used to preprocess data during real-time recognition
 
-grid_search.py: used to find the most suitable parameters
+`ProcessDataRpi.py`: used to preprocess data for training the model
+
+`grid_search.py`: used to find the most suitable parameters
 
 
-14_Nov1850.h5: the trained MLP model
 
-14_Nov1850.sav: the saved encoder to encode and decode multiclass labels
+`14_Nov1850.h5`: the trained MLP model
+
+`14_Nov1850.sav`: the saved encoder to encode and decode multiclass labels
 
 
