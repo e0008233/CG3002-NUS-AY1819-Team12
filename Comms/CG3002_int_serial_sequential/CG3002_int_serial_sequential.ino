@@ -87,8 +87,7 @@ char energy_c[NUMCHAR];
 
 #define SENSOR_1 4 // Left hand IMU
 #define SENSOR_2 5 // Right hand IMU
-#define SENSOR_3 6
-#define SENSOR_4 7
+#define SENSOR_3 6 // Right Leg IMU
 #define CURRENT A0
 #define VOLTAGE A1
 #define VOLTAGEREF 5.0
@@ -103,14 +102,6 @@ void TaskReadPower( void *pvParameters );
 void TransmitMessage( char [], int );
 
 void TaskSendData( void *pvParameters );
-
-//SemaphoreHandle_t xBufferMutex;
-
-
-//SemaphoreHandle_t xSerialSemaphoreSensor1;
-//SemaphoreHandle_t xSerialSemaphoreSensor2;
-//SemaphoreHandle_t xSerialSemaphoreSensor3;
-//SemaphoreHandle_t xSerialSemaphorePower;
 
 
 
@@ -177,9 +168,6 @@ void setup() {
   ogz3 = accelgyro.getRotationZ();
 
 
-
-
-  
   xTaskCreate(
     TaskSendData
     ,  (const portCHAR *) "AnalogRead"
@@ -188,7 +176,6 @@ void setup() {
     ,  1  // priority
     ,  NULL );
 
-// H
   vTaskStartScheduler();
 
 }
@@ -213,16 +200,10 @@ int32_t format_voltage(int16_t a) {
   return (int32_t) (a * VOLTAGEREF * 2 * NUMDIGITS / 1023.0);
 }
 
-
-char intToChar (int32_t num, char* array) {
-  //return dtostrf(num/NUMDIGITS, 3, 2, array);
-}
-
-
-
 void handshakeOperation() {
   int flag = 0;
   int sendNow = 0;
+  int sendACount = 0;
   while (flag == 0) {
     if (Serial.available()) {
       if (Serial.read() == 'H') {
@@ -232,25 +213,24 @@ void handshakeOperation() {
             char response = Serial.read();
             if (response == 'A') {
               sendNow = 1;
-              flag = 1;
+              flag = 1; // Continue with sensor read
               handshakeCount = 0;
             }
             else if (response == 'K') {
               sendNow = 1;
               flag = 1;
-              handshakeCount = 0;
-              msgID = 0;
+              handshakeCount = 0; 
+              msgID = 0; //Message ID reset
+            } else if (response == 'H' && sendACount == 0) {
+              Serial.write('A'); // Send A only once to not overwhelm the RPi buffer
+              sendACount = 1;
+              
             }
           }
         }
       }
     }
   }
-
-
-
-
-
 }
 
 char* getHash(char input[]) {
@@ -280,6 +260,7 @@ int ackWait(char fullMessage [], int msgIndex) {
     if (Serial.available()) {
       char result = Serial.read();
       if (result == 'A') {
+        //handshakeCount = 0;
         return 1;
       } else if (result == 'N') {
         //initialTime = currTime;
@@ -313,11 +294,11 @@ void TaskSendData(void *pvParameters)  // This is a task.
   for (;;)
   {
 
-    vTaskDelayUntil( &xLastWakeTime, (TickType_t) 1);
+    vTaskDelayUntil( &xLastWakeTime, (TickType_t) 1); // 1 Tick of ~16 ms, we are not using xPeriod
 
     if (handshakeCount == 4) {
-      handshakeOperation();
-    }
+      handshakeOperation(); //4 CONSECUTIVE message failures, go to blocking handshake operation
+    } 
 
     
 
@@ -452,16 +433,13 @@ void TaskSendData(void *pvParameters)  // This is a task.
 
     // if no ack, add to buffer
     if (ackResult == 1) {
-
-    } else if (ackResult == 0) {
-      handshakeCount++;
+      handshakeCount = 0; //Message Delivery Successful, reset handshake count if > 1
+    } else if (ackResult == 0 || ackResult == 2) {
+      handshakeCount++; > //Message Delivery UNSuccessful
     }
 
 
     memset(fullMessage, 0, sizeof(fullMessage));
-    // if no ack, add to buffer
-
-   
-    //vTaskDelayUntil( &xLastWakeTime,(TickType_t) 2 );
+    //Clear buffer for next round of reading
   }
 }
