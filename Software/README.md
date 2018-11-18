@@ -30,6 +30,8 @@ Note: configure the file paths properly to link to the right folders. Run the fi
 
 If there are warnings shown, it is safe to ignore them (according to research online).
 
+**Run `ProcessDataRpi.py` first before any other programs.**
+
 
 * `EDA.py`: used for exploratory data analysis. 
 
