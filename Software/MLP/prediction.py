@@ -3,7 +3,6 @@ import pandas as pd
 import ProcessData
 from keras.models import load_model
 from sklearn.externals import joblib
-from keras import optimizers
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 

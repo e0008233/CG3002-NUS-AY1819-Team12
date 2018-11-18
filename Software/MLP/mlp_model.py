@@ -122,19 +122,19 @@ def feature_importance(create_model):
 if __name__ == '__main__':
     model = create_model()
 
-    # #fit the model
-    # model.fit(X_train, Y_train, epochs=EPOCHS, batch_size=5, verbose=0)
-    #
-    # #test set accuracy (Prediction on test set)
-    # Y_pred = model.predict_classes(X_test)
-    # labels = np.unique(encoded_Y)
-    # targetNames = encoder.inverse_transform(labels)
-    # print("Classification accuracy on test set: {:.2f}%\n".format(accuracy_score(encoded_Y_test, Y_pred) * 100))
-    # print('Classification report for test set:')
-    # report = classification_report(encoded_Y_test, Y_pred, target_names=targetNames)
-    # print(report)
-    # # need to close the pop-up containing the confusion matrix so that the program can continue
-    # format_confusion_matrix(confusion_matrix(encoded_Y_test, Y_pred), targetNames).show()
+    #fit the model
+    model.fit(X_train, Y_train, epochs=EPOCHS, batch_size=5, verbose=0)
+
+    #test set accuracy (Prediction on test set)
+    Y_pred = model.predict_classes(X_test)
+    labels = np.unique(encoded_Y)
+    targetNames = encoder.inverse_transform(labels)
+    print("Classification accuracy on test set: {:.2f}%\n".format(accuracy_score(encoded_Y_test, Y_pred) * 100))
+    print('Classification report for test set:')
+    report = classification_report(encoded_Y_test, Y_pred, target_names=targetNames)
+    print(report)
+    # need to close the pop-up containing the confusion matrix so that the program can continue
+    format_confusion_matrix(confusion_matrix(encoded_Y_test, Y_pred), targetNames).show()
 
     #saving model
     shld_save = input("save model? y/n: ")
