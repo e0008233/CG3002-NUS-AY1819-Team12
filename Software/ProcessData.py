@@ -22,30 +22,15 @@ def extract_features(data):
         # iqr = Inter-Quartile Range, 75th percentile - 25th percentile
         q75, q25 = np.percentile(temp, [75, 25])
         iqr = q75 - q25
-        #fft = np.fft.fft(temp)
-        #fft = [np.sqrt(x.real**2 + x.imag**2) for x in fft ]
-        #q75, q25 = np.percentile(fft, [75, 25])
-        #fft_iqr = q75 - q25
 
         temp_row.append(mean)
         temp_row.append(median)
         temp_row.append(std)
         temp_row.append(iqr)
-        #temp_row.append(np.mean(fft))
-        #temp_row.append(np.median(fft))
-        #temp_row.append(np.std(fft))
-        #temp_row.append(fft_iqr)
         
     maximum = np.max(temp_row)
     minimum = np.min(temp_row)
     norm_row = [normalize_val(x, minimum, maximum) for x in temp_row]
     return norm_row
-'''
-    roll = np.arctan2(-(norm_row[47]), norm_row[71])
-    pitch = np.arcsin(norm_row[23])
-    yaw = np.arctan2(-(norm_row[19]), norm_row[15])
-    norm_row.append(roll)
-    norm_row.append(pitch)
-    norm_row.append(yaw)
-'''
+
 

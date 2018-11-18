@@ -1,38 +1,30 @@
 import numpy as np
-import processLiveData
-from keras.models import model_from_json
+import pandas as pd
+import ProcessData
+from keras.models import load_model
 from sklearn.externals import joblib
 from keras import optimizers
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
-
 # loading model and encoder
-with open('model_architecture.json', 'r') as f:
-    loaded_model_json = f.read()
-model = model_from_json(loaded_model_json)
-model.load_weights('model_weights.h5')
-encoder = joblib.load('encoder.sav')
-sgd = optimizers.SGD(lr=0.01, decay=1e-6, momentum=0.9, nesterov=True)
-model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
-# Note: the below line will cause a deprecation warning about truth value of array. Safe to ignore. to see more:
-# https://stackoverflow.com/questions/48687375/deprecation-error-in-sklearn-about-empty-array-without-any-empty-array-in-my-cod
-activity_list = encoder.inverse_transform([0, 1, 2, 3, 4])
+file_name = '14Nov_1850'
+model = load_model(file_name + '.h5')
+
+encoder = joblib.load(file_name + '.sav')
+activity_list = encoder.inverse_transform(list(range(11)))
 print(activity_list)
 
 
 def predict(data):
-    features = processLiveData.extract_features(data)
+    features = ProcessData.extract_features(data)
+    features = pd.DataFrame(features).T
     mlp_result = model.predict_classes(features)
-    rf_result = model.predict(features)
-    # find the most common label in result
+
     mlp_counts = np.bincount(mlp_result)
     mlp_result = np.argmax(mlp_counts)
     mlp_result = activity_list[mlp_result]
-    rf_counts = np.bincount(rf_result)
-    rf_result = np.argmax(rf_counts)
-    #TODO: get orig label for RF
-    # rf_result =
+
     print("MLP Predicted move: {}".format(mlp_result))
-    print("RF Predicted move: {}".format(rf_result))
-    return mlp_result, rf_result
+
+    return mlp_result
