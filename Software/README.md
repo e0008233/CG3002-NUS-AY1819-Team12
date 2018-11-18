@@ -34,8 +34,8 @@ If there are warnings shown, it is safe to ignore them according to research onl
 * `EDA.py`: used for exploratory data analysis. 
 
 * `mlp_model.py`: used to train and do validation fo the MLP model (includes feature importance analysis).
-** If running `feature_importance(create_model)`, enter `jupyter notebook` int the terminal Make sure that you are in the same directory where the `mlp_model.py` is at.
-** When the notebook has started create a new notebook and insert `%run mlp_modelpy` in a cell and run that cell. This is needed so that you can view the result of feature analysis that is in HTML format.
+	* If running `feature_importance(create_model)`, enter `jupyter notebook` int the terminal Make sure that you are in the same directory where the `mlp_model.py` is at.
+	* When the notebook has started create a new notebook and insert `%run mlp_model.py` in a cell and run that cell. This is needed so that you can view the result of feature analysis that is in HTML format.
 
 * `prediction.py`: used in real-time recognition to load and predict dance moves
 
