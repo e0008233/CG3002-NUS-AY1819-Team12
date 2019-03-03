@@ -1,32 +1,5 @@
-## Readme For Machine Learning component
-
-There are multiple files used over the development of the project, but the final code used in our demo is in MLP and RandomForest folders.
-
-## Installing packages on Rpi
-The packages needed to run the programs are detailed in the final report under _5.4.5 Libraries/Packages used_
-
-For installing on Rpi, use the following commands in the terminal:
-* sudo apt install libatlas-base-dev
-* sudo pip3 install tensorflow
-* sudo apt-get install python3-matplotlib
-* sudo apt-get install python3-numpy
-* sudo apt-get install libblas-dev
-* sudo apt-get install liblapack-dev
-* sudo apt-get install python3-dev
-* sudo apt-get install gfortran
-* sudo apt-get install python3-setuptools
-* sudo apt-get install python3-scipy
-* sudo apt-get update
-* sudo apt-get install python3-h5py
-* sudo pip3 install keras 
-* sudo pip3 install scikit-learn
-* sudo apt-get install python3-pandas
-* sudo pip3 install seaborn
-* sudo pip3 install eli5
-* sudo apt-get install python-dev ipython jupyter
-
 ## Readme for files in MLP folder
-Note: configure the file paths properly to link to the right folders. Run the files using Python3.
+Note: Configure the file paths properly to link to the right folders. Run the files using Python3.
 
 If there are warnings shown, it is safe to ignore them (according to research online).
 
