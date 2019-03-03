@@ -10,7 +10,7 @@ If there are warnings shown, it is safe to ignore them (according to research on
 
     * Plot of raw data (Accelerometer X-axis) for a dance move called "Salute"
 
-    ![alt text](https://github.com/jelneo/CG3002-NUS-AY1819-Team12/blob/master/Software/MLP/images/raw_plot_salute_dance_right_hand.png "raw_plot_salute_dance_right_hand" | width=200)
+    ![](https://github.com/jelneo/CG3002-NUS-AY1819-Team12/blob/master/Software/MLP/images/raw_plot_salute_dance_right_hand.png | width=200)
 
 * `mlp_model.py`: used to train and do validation fo the MLP model (includes feature importance analysis).
 	* Only this file needs to be run on jupyter. For the other files, it can be run on other IDEs.
@@ -20,11 +20,11 @@ If there are warnings shown, it is safe to ignore them (according to research on
     Outputs for:
     * Confusion matrix
 
-    ![alt text](https://github.com/jelneo/CG3002-NUS-AY1819-Team12/blob/master/Software/MLP/images/confusion_matrix.JPG | width=200)
+    ![](https://github.com/jelneo/CG3002-NUS-AY1819-Team12/blob/master/Software/MLP/images/confusion_matrix.JPG | width=200)
 
     * Feature importance
 
-    ![alt text](https://github.com/jelneo/CG3002-NUS-AY1819-Team12/blob/master/Software/MLP/images/feature_importance.JPG | width=200)
+    ![](https://github.com/jelneo/CG3002-NUS-AY1819-Team12/blob/master/Software/MLP/images/feature_importance.JPG | width=200)
 
 * `prediction.py`: used in real-time recognition to load and predict dance moves
 
