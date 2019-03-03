@@ -21,7 +21,7 @@ If there are warnings shown, it is safe to ignore them (according to research on
     * Confusion matrix
 
     ![](https://github.com/jelneo/CG3002-NUS-AY1819-Team12/blob/master/Software/MLP/images/confusion_matrix.JPG | width=200)
-
+    <img src="https://github.com/jelneo/CG3002-NUS-AY1819-Team12/blob/master/Software/MLP/images/confusion_matrix.JPG" width="200"/>
     * Feature importance
 
     ![](https://github.com/jelneo/CG3002-NUS-AY1819-Team12/blob/master/Software/MLP/images/feature_importance.JPG | width=200)
