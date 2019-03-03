@@ -7,7 +7,7 @@ from sklearn.model_selection import GridSearchCV
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 from keras.wrappers.scikit_learn import KerasClassifier
-# gets rid of AVX warning
+# gets rid of AVX warning, safe to ignore
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 

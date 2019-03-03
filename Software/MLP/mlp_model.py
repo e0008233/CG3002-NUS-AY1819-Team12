@@ -17,7 +17,7 @@ import seaborn as sns
 from sklearn.externals import joblib
 import matplotlib.pyplot as plt
 from keras.wrappers.scikit_learn import KerasClassifier
-# gets rid of AVX warning
+# gets rid of AVX warning, safe to ignore
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 
@@ -74,7 +74,7 @@ def create_model(momentum=0.9, activation1='tanh'):
     model.add(Dense(NUM_LABELS, activation='softmax'))  # output layer
     sgd = optimizers.SGD(lr=0.01, decay=0.5e-6, momentum=momentum, nesterov=True)
     # Compile model
-    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy']) #might wanna try other loss functions
+    model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
     return model
 
 
@@ -133,14 +133,14 @@ if __name__ == '__main__':
     print('Classification report for test set:')
     report = classification_report(encoded_Y_test, Y_pred, target_names=targetNames)
     print(report)
-    # need to close the pop-up containing the confusion matrix so that the program can continue
+    # Note: need to manually close the pop-up containing the confusion matrix so that the program can continue
     format_confusion_matrix(confusion_matrix(encoded_Y_test, Y_pred), targetNames).show()
 
     #saving model
     shld_save = input("save model? y/n: ")
-    if (shld_save == 'y' or shld_save == 'N'):
+    if (shld_save == 'y' or shld_save == 'Y'):
         file_name = input('Enter model name: ')
-        model.save(file_name + '.h5')  # creates a HDF5 file 'my_model.h5'
+        model.save(file_name + '.h5')  # creates a HDF5 file
         joblib.dump(encoder, file_name + '.sav')
         del model  # deletes the existing model
         print("Saved model to disk")
@@ -151,4 +151,4 @@ if __name__ == '__main__':
         k_fold_val()
 
     #uncomment the line(s) that you want to run
-    feature_importance(create_model)
+    # feature_importance(create_model)

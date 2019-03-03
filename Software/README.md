@@ -42,9 +42,9 @@ If there are warnings shown, it is safe to ignore them (according to research on
 
 * `prediction.py`: used in real-time recognition to load and predict dance moves
 
-* `ProcessData.py`: used to preprocess data during real-time recognition
+* `ProcessDataRealTime.py`: used to preprocess data during real-time recognition
 
-* `ProcessDataRpi.py`: used to preprocess data for training the model
+* `ProcessDataTraining.py`: used to preprocess data for training the model
 
 * `grid_search.py`: used to find the most suitable parameters
 
